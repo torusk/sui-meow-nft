@@ -4,32 +4,34 @@
 # Meow NFT 配布用オートメーションスクリプト
 # ==========================================
 
-# --- 設定項目 (ここを編集) ---
-# デプロイ済みのパッケージID
-PACKAGE_ID="0xa9151794e08d2feb3e1261a2718b42c787cfdeb296ba282dae44aca208957818"
-# NFTの画像URL (IPFS)
-IMAGE_URL="ipfs://bafkreibczy52boyldncw4ohzqvyl5qagiyoip76q7u33qpvmc75r5mfsx4"
-# モジュール名
+# --- ローカル設定の読み込み ---
+if [ -f "config.local" ]; then
+    source config.local
+else
+    # config.localがない場合のデフォルト(GitHub公開用)
+    PACKAGE_ID="0xa9151794e08d2feb3e1261a2718b42c787cfdeb296ba282dae44aca208957818"
+    IMAGE_URL="ipfs://bafkreibczy52boyldncw4ohzqvyl5qagiyoip76q7u33qpvmc75r5mfsx4"
+    NFT_TITLE="[タイトル未設定]"
+    NFT_DESC="[説明文未設定]"
+fi
+
 MODULE="meow_nft"
 
 # --- スクリプト本体 ---
 
-# 引数チェック
-if [ "$#" -ne 3 ]; then
-    echo "❌ エラー: 引数が足りません。"
-    echo "使い方: ./mint_nft.sh \"タイトル\" \"説明文\" \"相手のアドレス\""
-    echo "例: ./mint_nft.sh \"Meow Champion #1\" \"Good Job!\" 0x1234abcd..."
+# 引数チェック (アドレスを受け付ける)
+if [ "$#" -lt 1 ]; then
+    echo "❌ エラー: アドレスを指定してください。"
+    echo "使い方: ./mint_nft.sh 0x相手のアドレス"
     exit 1
 fi
 
-TITLE=$1
-DESC=$2
-RECIPIENT=$3
+RECIPIENT=$1
 
 echo "------------------------------------------"
 echo "🚀 NFTのミントと配布を開始します..."
-echo "タイトル: $TITLE"
-echo "説明文  : $DESC"
+echo "タイトル: $NFT_TITLE"
+echo "説明文  : $NFT_DESC"
 echo "配布先  : $RECIPIENT"
 echo "------------------------------------------"
 
@@ -38,18 +40,13 @@ sui client call \
     --function mint \
     --module $MODULE \
     --package $PACKAGE_ID \
-    --args "$TITLE" "$DESC" "$IMAGE_URL" "$RECIPIENT" \
+    --args "$NFT_TITLE" "$NFT_DESC" "$IMAGE_URL" "$RECIPIENT" \
     --gas-budget 20000000 \
     --json
 
-# 結果の判定
 if [ $? -eq 0 ]; then
-    echo ""
     echo "✅ 成功しました！"
-    echo "配布が完了しました。SuiScanなどで確認してください。"
 else
-    echo ""
     echo "❌ 失敗しました。"
-    echo "エラー内容は上記を確認してください。"
 fi
 echo "------------------------------------------"

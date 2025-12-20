@@ -1,4 +1,10 @@
-build/*
-traces/*
-.trace
-.coverage*
+# SUI Build artifacts
+/build/
+/Move.lock
+
+# Local configuration (Sensitive info)
+.env
+config.local
+
+# OS files
+.DS_Store
