@@ -79,4 +79,10 @@ module meow_nft::meow_nft {
 
         transfer::public_transfer(nft, recipient);
     }
+
+    /// Burn (destroy) an NFT
+    public entry fun burn(nft: MeowNFT) {
+        let MeowNFT { id, name: _, description: _, url: _ } = nft;
+        object::delete(id);
+    }
 }
