@@ -8,3 +8,4 @@ config.local
 
 # OS files
 .DS_Store
+distribute_meow.sh
