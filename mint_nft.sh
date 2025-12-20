@@ -9,7 +9,7 @@ if [ -f "config.local" ]; then
     source config.local
 else
     # config.localがない場合のデフォルト(GitHub公開用)
-    PACKAGE_ID="0xa9151794e08d2feb3e1261a2718b42c787cfdeb296ba282dae44aca208957818"
+    PACKAGE_ID="0x8971df9b4ea946c47f01baf46ed492ac02290faf8d768b5d4adecd824ed8cbbf"
     IMAGE_URL="ipfs://bafkreibczy52boyldncw4ohzqvyl5qagiyoip76q7u33qpvmc75r5mfsx4"
     NFT_TITLE="[タイトル未設定]"
     NFT_DESC="[説明文未設定]"
