@@ -2,6 +2,8 @@
 
 このプロジェクトは、Sui Testnet上でNFTを作成し、メンバーに配布するための一連の手順をまとめたものです。
 
+---
+
 ## 📋 プロジェクト全体の流れ
 
 ### 1. 画像の準備 (Pinata / IPFS)
@@ -39,61 +41,71 @@ NFTの「中身」と「ルール」を定義するスマートコントラク�
   [dependencies]
   Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
   ```
-  ※テストネット用の場合。メインネットの場合は `rev` を `framework/mainnet` にします。
+  ※メインネットの場合は `rev` を `framework/mainnet` にします。
 
 - **コントラクト実装 (`sources/meow_nft.move`)**:
-  主要なポイントは以下の3点です。
+  主要なポイントは以下の4点です。
 
-  1.  **NFT構造体の定義**:
-      ```move
-      public struct MeowNFT has key, store {
-          id: UID,
-          name: String,
-          description: String,
-          url: Url,
-      }
-      ```
-      `key` はSuiオブジェクトとしてIDを持つために必要で、`store` を持たせることでウォレット間での自由な転送が可能になります。
-
-  2.  **Displayオブジェクトの設定 (メタデータ表示)**:
-      `init` 関数内で `sui::display` を使用し、ウォレットやエクスプローラー上で名前や画像がどのように表示されるかを設定します。
-      ```move
-      let keys = vector[utf8(b"name"), utf8(b"image_url"), ...];
-      let values = vector[utf8(b"{name}"), utf8(b"{url}"), ...];
-      // {name} や {url} は、NFT構造体のフィールド値を参照するテンプレート
-      ```
-
-  3.  **ミント（発行）関数**:
-      誰が（または権限者が）NFTを作成できるかを `public entry fun mint` として定義します。引数に `name` や `url` を受け取るようにすることで、発行ごとに異なる情報を設定できます。
+  1.  **NFT構造体の定義**: 
+      `key, store` を持たせることでウォレット間での転送が可能になります。
+  2.  **Displayオブジェクトの設定**: ウォレット上で画像を表示させるために設定します。
+  3.  **ミント（発行）関数**: 誰がNFTを作成できるかを定義します。
+  4.  **バーン（削除）関数**: 所有者がNFTを破壊できるようにするために定義します。これにより、ウォレット上での削除ボタン表示やスクリプトによる消去が可能になります。
 
 ### 4. テストネットへのデプロイ
 - **ビルド**: `sui move build`
 - **デプロイ**: `sui client publish --gas-budget 100000000`
-- 成功時に出力される **Package ID** をメモします。
+- 成功時に出力される **Package ID** をメモし、スクリプトの `PACKAGE_ID` 変数（または `config.local`）を更新します。
 
 ### 5. 配布自動化 (Shell Script)
-一人ひとりにコマンドを打つのは大変なため、自動化スクリプトを作成しました。
+一人ひとりにコマンドを打つのは大変なため、自動化スクリプトを使用します。
+リポジトリ直下に `config.local` という名前でファイルを作成すると、スクリプトが自動で読み込みます。
 
-#### A. 汎用スクリプト (`mint_nft.sh`)
-GitHub公開用の汎用スクリプトです。`config.local` ファイルを作成して使用します。
+- **汎用スクリプト (`mint_nft.sh`)**: 宛先アドレスを引数に取ります。
+- **専用スクリプト (`distribute_meow.sh`)**: 優勝記念に特化した内容を直接配布します。
 
-#### B. 専用スクリプト (`distribute_meow.sh`)
-【ローカル専用 / Git追跡対象外】
-今回の優勝記念に特化した内容を直接書き込んだスクリプトです。アドレスを一つ指定するだけで、即座にミントと配布が行われ、確認用URLが表示されます。
+### 6. 不要なNFTの削除 (Burn)
+自分が所有しているNFTを削除して、ストレージ代の返金を受けることができます。
 ```bash
-./distribute_meow.sh [相手のウォレットアドレス]
+./burn_nft.sh [NFTのObject ID]
 ```
 
 ---
 
-## 🛠️ まとめ：次回からの最短手順
-1. 画像をPinataに上げる。
-2. `distribute_meow.sh` 内の `IMAGE_URL` を新しいCIDに書き換える。
-3. 必要に応じて `TITLE` や `DESC` を変える。
-4. コマンドを実行して配布！
+## 🚀 クローンして別の画像でNFTを発行する手順
+既存のパッケージIDを再利用して、画像や名前だけが異なる新しいNFTを発行する最短手順です。
+
+1. **GitHubからクローン**: `git clone [URL]`
+2. **ローカル設定ファイルの作成**: `touch config.local`
+3. **設定の書き込み**:
+   ```bash
+   PACKAGE_ID="0x8971df9b4ea946c47f01baf46ed492ac02290faf8d768b5d4adecd824ed8cbbf"
+   IMAGE_URL="ipfs://[取得した新しいCID]"
+   NFT_TITLE="[タイトル]"
+   NFT_DESC="[説明文]"
+   ```
+4. **発行（ミント）の実行**: `./mint_nft.sh [アドレス]`
+
+---
+
+## 💰 メインネット（本番環境）移行ガイド
+本番環境へ移行する際の手順、費用、および注意点です。
+
+### 費用概算 (目安)
+- **コントラクト公開**: 約 1.0 ~ 2.0 SUI (数百円)
+- **NFTミント (1枚あたり)**: 約 0.005 ~ 0.01 SUI (数円)
+
+### 移行時の変更ポイント
+1. **Sui CLI の環境切り替え**: `sui client switch --env mainnet`
+2. **本物の SUI の準備**: 取引所等で入手し、自分のアドレスへ送金。
+3. **パッケージIDの更新**: メインネットへデプロイ後に発行される新しいIDをスクリプトに反映。
+
+### 注意事項
+- **不変性**: 一度発行したNFTの画像URLを後から変更することはできません。デプロイ前にテストネットで完璧に動作確認をしてください。
+- **画像CIDの恒久性**: Pinataにアップロードした画像が「間違っていないか」を再確認してください。
 
 ---
 
 ## 🔗 参考リンク
-- **SuiScan (Testnet)**: トランザクションやNFTの確認
+- **SuiScan (Testnet)**: [https://suiscan.xyz/testnet/](https://suiscan.xyz/testnet/)
 - **Sui Documentation**: Move言語の公式ドキュメント
