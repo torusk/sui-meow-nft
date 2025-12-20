@@ -106,6 +106,22 @@ NFTの「中身」と「ルール」を定義するスマートコントラク�
 
 ---
 
+## ⌨️ 常用 Sui CLI コマンド集 (Cheat Sheet)
+開発や運用中によく使うコマンドのまとめです。
+
+| 操作内容 | コマンド |
+| :--- | :--- |
+| **自身のアドレスを確認** | `sui client active-address` |
+| **残高 (SUI) の確認** | `sui client gas` |
+| **所有オブジェクト (NFT等) の一覧** | `sui client objects` |
+| **接続環境の確認** | `sui client envs` |
+| **環境の切り替え (testnet/mainnet)** | `sui client switch --env [環境名]` |
+| **コードのビルド** | `sui move build` |
+| **NFTの削除 (Burn)** | `./burn_nft.sh [Object ID]` |
+| **テストネット用 SUI の取得** | `sui client faucet` |
+
+---
+
 ## 🔗 参考リンク
 - **SuiScan (Testnet)**: [https://suiscan.xyz/testnet/](https://suiscan.xyz/testnet/)
 - **Sui Documentation**: Move言語の公式ドキュメント
