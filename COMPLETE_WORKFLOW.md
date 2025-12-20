@@ -22,13 +22,49 @@ NFTの「見た目」となる画像をIPFSに永久保存します。
   ```bash
   sui client faucet
   ```
+  ※ コマンドでエラーが出る場合、または案内が表示される場合は、Web UI ([faucet.sui.io](https://faucet.sui.io/)) にアクセスし、自分のアドレス（`sui client active-address` で確認可能）を入力して取得してください。
 
 ### 3. スマートコントラクト(Move)の開発
-- **プロジェクト作成**: `sui move new meow_nft`
-- **依存関係設定**: `Move.toml` に `Sui Framework` を追加。
-- **コントラクト実装**: `sources/meow_nft.move` に NFT の構造と、ミント（発行）関数を記述。
-  - `key, store` を持たせることでウォレット間での転送が可能になります。
-  - `display` オブジェクトを設定することで、エクスプローラー上で画像が表示されるようになります。
+NFTの「中身」と「ルール」を定義するスマートコントラクトを作成します。
+
+- **プロジェクト作成**:
+  ```bash
+  sui move new [プロジェクト名]
+  ```
+  実行後、ディレクトリ内に `Move.toml` と `sources/` ディレクトリが生成されます。
+
+- **依存関係設定 (`Move.toml`)**:
+  Suiの標準ライブラリ（Sui Framework）を利用するために、`[dependencies]` セクションに以下を記述します。
+  ```toml
+  [dependencies]
+  Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
+  ```
+  ※テストネット用の場合。メインネットの場合は `rev` を `framework/mainnet` にします。
+
+- **コントラクト実装 (`sources/meow_nft.move`)**:
+  主要なポイントは以下の3点です。
+
+  1.  **NFT構造体の定義**:
+      ```move
+      public struct MeowNFT has key, store {
+          id: UID,
+          name: String,
+          description: String,
+          url: Url,
+      }
+      ```
+      `key` はSuiオブジェクトとしてIDを持つために必要で、`store` を持たせることでウォレット間での自由な転送が可能になります。
+
+  2.  **Displayオブジェクトの設定 (メタデータ表示)**:
+      `init` 関数内で `sui::display` を使用し、ウォレットやエクスプローラー上で名前や画像がどのように表示されるかを設定します。
+      ```move
+      let keys = vector[utf8(b"name"), utf8(b"image_url"), ...];
+      let values = vector[utf8(b"{name}"), utf8(b"{url}"), ...];
+      // {name} や {url} は、NFT構造体のフィールド値を参照するテンプレート
+      ```
+
+  3.  **ミント（発行）関数**:
+      誰が（または権限者が）NFTを作成できるかを `public entry fun mint` として定義します。引数に `name` や `url` を受け取るようにすることで、発行ごとに異なる情報を設定できます。
 
 ### 4. テストネットへのデプロイ
 - **ビルド**: `sui move build`
