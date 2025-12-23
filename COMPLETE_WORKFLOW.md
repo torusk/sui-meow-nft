@@ -8,10 +8,14 @@
 
 ### 1. 画像の準備 (Pinata / IPFS)
 NFTの「見た目」となる画像をIPFSに永久保存します。
-- [Pinata](https://www.pinata.cloud/) にログイン。
-- 「Upload」から画像ファイルをアップロード。
-- 発行された **CID** (例: `bafkreibczy...`) をメモする。
-- リンク形式は `ipfs://[CID]` となります。
+1.  **アカウント登録**: [Pinata.cloud](https://www.pinata.cloud/) にアクセスし、「Start building」または「Login」からアカウントを作成します。**GitHubアカウントで連携（Continue with GitHub）**するとスムーズです。
+2.  **画像のアップロード**:
+    - ログイン後、画面右上の「+ Add Content」から「File」を選択。
+    - NFTにしたい画像ファイルを選択してアップロードします（名前は任意）。
+3.  **CIDの取得**:
+    - アップロードが完了すると、ファイル一覧（Files）に表示されます。
+    - **「Content ID (CID)」** 欄にある `bafk...` から始まる長い文字列をコピーしてメモします。
+4.  **リンク形式**: ミント時に使用するURLは `ipfs://[コピーしたCID]` の形式になります。
 
 ### 2. Sui 環境のセットアップ
 - **Sui CLI** のインストールと最新化。
