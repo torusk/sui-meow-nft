@@ -1,6 +1,6 @@
 # Meow NFT Project 🐱🏆
 
-Sui Testnet上で、東大ブロックチェーン講座のグループワーク優勝を記念したNFTを発行・配布するためのプロジェクトです。
+Sui Testnet上で、作成した記念NFTを発行・頒布するためのテンプレートプロジェクトです。
 
 ## 📁 構成
 - **`sources/`**: Sui Move言語によるスマートコントラクト（NFTの定義）
@@ -11,12 +11,11 @@ Sui Testnet上で、東大ブロックチェーン講座のグループワーク
 ## 📖 ガイド一覧
 1. **[完全ワークフロー (COMPLETE_WORKFLOW.md)](./COMPLETE_WORKFLOW.md)**
    - 画像のアップロードからデプロイ、配布までの全行程をまとめたバイブルです。
-2. **[配布ガイド (DISTRIBUTION_GUIDE.md)](./DISTRIBUTION_GUIDE.md)**
-   - GitHub公開用に、個人情報を伏せてスクリプトを使う方法をまとめています。
+
 
 ## 📍 技術詳細 (Deployed)
 - **Network**: Sui Testnet
-- **Package ID**: `0xa9151794e08d2feb3e1261a2718b42c787cfdeb296ba282dae44aca208957818`
+- **Package ID**: `0x8971df9b4ea946c47f01baf46ed492ac02290faf8d768b5d4adecd824ed8cbbf`
 
 ---
 *Created by torusk with assistance.*
