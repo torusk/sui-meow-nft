@@ -80,7 +80,8 @@ NFTの「中身」と「ルール」を定義するスマートコントラク�
 既存のパッケージIDを再利用して、画像や名前だけが異なる新しいNFTを発行する最短手順です。
 
 1. **GitHubからクローン**: `git clone [URL]`
-2. **ローカル設定ファイルの作成**: `touch config.local`
+2. **画像の準備**: **[1. 画像の準備](#1-画像の準備-pinata--ipfs)** セクションの手順で画像をアップロードし、CIDを取得します。
+3. **ローカル設定ファイルの作成**: `touch config.local`
 3. **設定の書き込み**:
    ```bash
    PACKAGE_ID="0x8971df9b4ea946c47f01baf46ed492ac02290faf8d768b5d4adecd824ed8cbbf"
