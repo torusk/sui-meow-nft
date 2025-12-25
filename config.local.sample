@@ -1,0 +1,11 @@
+# Sui NFT Configuration Sample
+# このファイルを config.local にコピーして内容を書き換えてください。
+# cp config.local.sample config.local
+
+# パッケージID（最新の消去機能付き）
+PACKAGE_ID="0x8971df9b4ea946c47f01baf46ed492ac02290faf8d768b5d4adecd824ed8cbbf"
+
+# NFTのメタデータ設定
+IMAGE_URL="ipfs://[ここに画像のCIDを入れる]"
+NFT_TITLE="[ここにタイトルを入れる]"
+NFT_DESC="[ここに説明文を入れる]"
